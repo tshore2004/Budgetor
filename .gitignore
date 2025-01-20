@@ -3,7 +3,10 @@
 *
 # But do not ignore the .gitignore file
 !.gitignore
-!/budgetor/*
+
+# Allow all files in the budgetor folder and its subdirectories
+!/budgetor/
+!/budgetor/**
 
 
 # dependencies
