@@ -3,6 +3,8 @@
 *
 # But do not ignore the .gitignore file
 !.gitignore
+!/budgetor/*
+
 
 # dependencies
 /node_modules
