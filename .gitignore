@@ -9,6 +9,7 @@
 !/budgetor/**
 
 !server.js
+!README.md
 
 # dependencies
 /node_modules
