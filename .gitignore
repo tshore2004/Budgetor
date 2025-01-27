@@ -8,6 +8,7 @@
 !/budgetor/
 !/budgetor/**
 
+!server.js
 
 # dependencies
 /node_modules
