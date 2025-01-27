@@ -27,6 +27,26 @@ function App() {
     }
   };
 
+  const handleDeleteExpense = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/delete-entry/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setExpenses((prevExpenses) =>
+          prevExpenses.filter((expense) => expense._id !== id)
+        );
+        console.log('Expense deleted successfully!');
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to delete expense:', errorData.error);
+      }
+    } catch (error) {
+      console.error('Error while deleting expense:', error);
+    }
+  };
+
   const addIncome = async (newIncome) => {
     try {
       const response = await fetch('http://localhost:5000/add-entry', {
@@ -41,6 +61,26 @@ function App() {
       setIncome([...income, newIncome]);
     } catch (error) {
       console.error('Error saving income:', error);
+    }
+  };
+
+  const handleDeleteIncome = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/delete-entry/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setIncome((prevIncome) =>
+          prevIncome.filter((income) => income._id !== id)
+        );
+        console.log('Income deleted successfully!');
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to delete income:', errorData.error);
+      }
+    } catch (error) {
+      console.error('Error while deleting income:', error);
     }
   };
 
@@ -116,8 +156,8 @@ function App() {
       </div>
       <div className="tab-content">
         {activeTab === 'balance' && <BalanceTracker income={income} expenses={expenses} clearData={clearData} />}
-        {activeTab === 'expenses' && <ExpenseTracker expenses={expenses} addExpense={addExpense} />}
-        {activeTab === 'income' && <IncomeTracker income={income} addIncome={addIncome} />}
+        {activeTab === 'expenses' && <ExpenseTracker expenses={expenses} addExpense={addExpense} handleDeleteExpense={handleDeleteExpense} />}
+        {activeTab === 'income' && <IncomeTracker income={income} addIncome={addIncome} handleDeleteIncome={handleDeleteIncome} />}
         {activeTab === 'charts' && <ChartComponent income={income} expenses={expenses} />}
       </div>
     </div>

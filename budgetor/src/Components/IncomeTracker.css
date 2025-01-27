@@ -1,34 +1,54 @@
 .income-tracker {
     max-width: 600px;
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
+    color: #333;
 }
 
 .income-tracker h2 {
     text-align: center;
     color: #333;
+    font-size: 24px;
     margin-bottom: 20px;
+    font-weight: bold;
+    border-bottom: 2px solid #4caf50;
+    padding-bottom: 10px;
 }
 
 .income-form {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 20px;
 }
 
 .input-field {
     flex: 1;
+    min-width: 25%;
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 16px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+}
+
+.input-field:hover {
+    border-color: #007bff;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .add-button {
+    flex-basis: 100%;
     padding: 10px 20px;
     background-color: #4caf50;
     color: white;
@@ -36,6 +56,7 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    text-align: center;
     transition: background-color 0.3s ease;
 }
 
@@ -45,31 +66,61 @@
 
 .income-list {
     margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
 }
 
 .income-list h3 {
     text-align: center;
     color: #555;
     margin-bottom: 10px;
+    font-size: 18px;
 }
 
 .income-item {
     display: flex;
+    flex-direction: column;
+    position: relative;
     justify-content: space-between;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 10px;
-    background-color: #fff;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
 }
 
-.income-item .description {
+.income-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    gap: 10px;
+}
+
+.description {
     font-weight: bold;
     color: #333;
+    flex: 1;
+    text-align: left;
+    word-wrap: break-word;
 }
 
-.income-item .amount {
+.amount {
     color: #4caf50;
+    font-weight: bold;
+    margin-left: auto;
+    /* text-align: right; */
+    flex-shrink: 0;
+}
+
+.income-category {
+    font-size: 14px;
+    color: #555;
+    text-align: left;
+    margin-top: 5px;
+    font-style: italic; 
+    margin-left: auto;
 }
 
 .no-income {
@@ -78,3 +129,112 @@
     font-style: italic;
     margin-top: 10px;
 }
+
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+    background-color: #f9f9f9;
+}
+
+.dropdown-header {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    min-width: 130px;
+}
+
+.dropdown-header:hover {
+    border-color: #007bff;
+}
+
+.dropdown-header:focus {
+    outline: none;
+}
+
+.dropdown-arrow {
+    font-size: 12px;
+    color: #999;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-arrow.open {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+    padding: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    background-color: #f9f9f9;
+    overflow: hidden;
+    min-width: fit-content;
+    max-width: 300px;
+    display: block;
+    overflow: hidden;
+    overflow-y: auto;
+    top: calc(100% + 5px);
+    max-height: 150px;
+}
+
+.dropdown-menu.open {
+    max-height: 300px;
+}
+
+.dropdown-item {
+    padding: 10px;
+    font-size: 16px;
+    white-space: nowrap; 
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #007bff;
+    color: #f9f9f9;;
+}
+
+.dropdown-menu.hidden {
+    display: none;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: #007bff; /* Nice blue shade */
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.income-item:hover .delete-btn {
+    opacity: .8; /* Show on hover */
+}
+
+.delete-btn:hover {
+    transform: scale(1.1); /* Slight zoom effect */
+    color: #0056b3; /* Darker blue on hover */
+}
+
+
+
+
+

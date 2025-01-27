@@ -5,7 +5,7 @@ import './ExpenseTracker.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function ExpenseTracker({ expenses, addExpense }) {
+function ExpenseTracker({ expenses, addExpense, handleDeleteExpense }) {
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
@@ -50,7 +50,8 @@ function ExpenseTracker({ expenses, addExpense }) {
         datasets: [
             {
                 data: Object.values(expensesByCategory),
-                backgroundColor: ['red', 'blue', 'green', 'purple', 'orange'],
+                backgroundColor: ['#f94144', '#f3722c', '#f8961e', '#90be6d', '#43aa8b'],
+                hoverBackgroundColor: ['#f94144aa', '#f3722caa', '#f8961eaa', '#90be6daa', '#43aa8baa'],
             },
         ],
     };
@@ -118,46 +119,41 @@ function ExpenseTracker({ expenses, addExpense }) {
         <div className="expenses-tracker">
             <h2>Expense Tracker</h2>
             <div className="expenses-form">
-                <input
-                    type="text"
-                    placeholder="Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="input-field"
-                />
-                <input
-                    type="number"
-                    placeholder="Amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="input-field"
-                />
-                <div className="custom-dropdown" ref={dropdownRef}>
-                    <div
-                        className="dropdown-header"
-                        onClick={toggleDropdown}
-                    >
-                        {category || 'Select Category'}
-                        <span className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>▼</span>
+                <div className="input-row">
+                    <input
+                        type="number"
+                        placeholder="Amount"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        className="input-field"
+                    />
+                    <div className="custom-dropdown" ref={dropdownRef}>
+                        <div className="dropdown-header" onClick={toggleDropdown}>
+                            {category || 'Select Category'}
+                            <span className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>▼</span>
+                        </div>
+                        {isDropdownOpen && (
+                            <ul className="dropdown-menu" style={{ width: calculateDropdownWidth() }}>
+                                {categories.map((cat, index) => (
+                                    <li
+                                        key={index}
+                                        className="dropdown-item"
+                                        onClick={() => handleCategorySelect(cat)}
+                                    >
+                                        {cat}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
-                    {isDropdownOpen && (
-                        <ul
-                            className={`dropdown-menu ${isDropdownOpen ? 'open' : ''}`}
-                            style={{ width: calculateDropdownWidth() }}
-                        >
-                            {categories.map((cat, index) => (
-                                <li
-                                    key={index}
-                                    className="dropdown-item"
-                                    onClick={() => handleCategorySelect(cat)}
-                                >
-                                    {cat}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                    <input
+                        type="text"
+                        placeholder="Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="input-field"
+                    />
                 </div>
-
 
                 <button onClick={handleAddExpense} className="add-button">
                     Add Expense
@@ -167,10 +163,17 @@ function ExpenseTracker({ expenses, addExpense }) {
                 <h3>Expense Entries</h3>
                 {expenses && expenses.length > 0 ? (
                     <ul>
-                        {expenses.map((item, index) => (
-                            <li key={index} className="expenses-item">
+                        {expenses.map((item) => (
+                            <li key={item._id} className="expenses-item">
                                 <div className="expense-main">
                                     <span className="description">{item.description}</span>
+                                    <button
+                                        className="delete-btn"
+                                        onClick={() => handleDeleteExpense(item._id)}
+                                        aria-label="Delete expense"
+                                    >
+                                        ✖
+                                    </button>
                                     <span className="amount">${item.amount.toFixed(2)}</span>
                                 </div>
                                 <div className="expense-category">
@@ -187,7 +190,11 @@ function ExpenseTracker({ expenses, addExpense }) {
                 <h2>Insights</h2>
                 <ul>
                     {insights.map((insight, index) => (
-                        <li key={index}>{insight}</li>
+                        <li key={index}>
+                            <span className={insight.includes('warning') ? 'insight-warning' : 'insight-info'}>
+                                {insight}
+                            </span>
+                        </li>
                     ))}
                 </ul>
             </div>

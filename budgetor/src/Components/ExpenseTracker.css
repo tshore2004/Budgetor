@@ -28,12 +28,23 @@
 
 .input-field {
     flex: 1;
-    min-width: 45%;
+    min-width: 25%;
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 16px;
     background-color: #f9f9f9;
+    border: 1px solid #ccc;
+}
+
+.input-field:hover {
+    border-color: #007bff;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .add-button {
@@ -69,11 +80,14 @@
 .expenses-item {
     display: flex;
     flex-direction: column;
+    position: relative;
+    justify-content: space-between;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 10px;
     background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
 }
 
 .expense-main {
@@ -81,6 +95,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 5px;
+    gap: 10px;
 }
 
 .description {
@@ -94,17 +109,18 @@
 .amount {
     color: #4caf50;
     font-weight: bold;
-    margin-left: 10px;
-    text-align: right;
+    margin-left: auto;
+    /* text-align: right; */
     flex-shrink: 0;
 }
 
-.expenses-category {
+.expense-category {
     font-size: 14px;
     color: #555;
     text-align: left;
     margin-top: 5px;
     font-style: italic; 
+    margin-left: auto;
 }
 
 .no-expenses {
@@ -140,16 +156,26 @@
     line-height: 1.5;
 }
 
+.insight-warning {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.insight-info {
+    color: #5bc0de;
+}
+
 .custom-dropdown {
     position: relative;
     width: 100%;
+    background-color: #f9f9f9;
 }
 
 .dropdown-header {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    background-color: #ffffff;
+    background-color: #f9f9f9;
     font-size: 16px;
     color: #333;
     cursor: pointer;
@@ -157,7 +183,7 @@
     justify-content: space-between;
     align-items: center;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    min-width: 150px; /* Ensure minimum width */
+    min-width: 130px;
 }
 
 .dropdown-header:hover {
@@ -168,7 +194,6 @@
     outline: none;
 }
 
-/* Arrow Styling */
 .dropdown-arrow {
     font-size: 12px;
     color: #999;
@@ -189,19 +214,22 @@
     margin-top: 5px;
     padding: 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    background-color: white;
+    z-index: 10;
+    background-color: #f9f9f9;
     overflow: hidden;
     min-width: fit-content;
     max-width: 300px;
     display: block;
+    overflow: hidden;
+    overflow-y: auto;
+    top: calc(100% + 5px);
+    max-height: 150px;
 }
 
 .dropdown-menu.open {
     max-height: 300px;
 }
 
-/* Dropdown Item */
 .dropdown-item {
     padding: 10px;
     font-size: 16px;
@@ -212,9 +240,36 @@
 
 .dropdown-item:hover {
     background-color: #007bff;
-    color: white;
+    color: #f9f9f9;;
 }
 
 .dropdown-menu.hidden {
     display: none;
 }
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: #007bff; /* Nice blue shade */
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.expenses-item:hover .delete-btn {
+    opacity: .8; /* Show on hover */
+}
+
+.delete-btn:hover {
+    transform: scale(1.1); /* Slight zoom effect */
+    color: #0056b3; /* Darker blue on hover */
+}
+
+
+
+
+
