@@ -9,7 +9,7 @@ function App() {
   const [expenses, setExpenses] = useState([]);
   const [income, setIncome] = useState([]);
   const [activeTab, setActiveTab] = useState('balance');
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000'; // Use environment variable or default to localhost
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
   const addExpense = async (newExpense) => {
     try {
@@ -50,7 +50,7 @@ function App() {
 
   const addIncome = async (newIncome) => {
     try {
-      const response = await fetch('API_BASE_URL/add-entry', {
+      const response = await fetch(`API_BASE_URL/add-entry`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ function App() {
   useEffect(() => {
     const fetchBudgetData = async () => {
       try {
-        const response = await fetch('API_BASE_URL/budget-data');
+        const response = await fetch(`API_BASE_URL/budget-data`);
         const data = await response.json();
 
         // Separate income and expenses if needed
@@ -108,7 +108,7 @@ function App() {
   const clearData = async () => {
     if (window.confirm('Are you sure you want to clear all data?')) {
       try {
-        const response = await fetch('API_BASE_URL/clear-data', {
+        const response = await fetch(`API_BASE_URL/clear-data`, {
           method: 'DELETE',
         });
         const result = await response.json();
