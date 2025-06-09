@@ -9,7 +9,7 @@ function App() {
   const [expenses, setExpenses] = useState([]);
   const [income, setIncome] = useState([]);
   const [activeTab, setActiveTab] = useState('balance');
-  const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:5000'; // Use environment variable or default to localhost
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000'; // Use environment variable or default to localhost
 
   const addExpense = async (newExpense) => {
     try {
