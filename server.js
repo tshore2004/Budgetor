@@ -53,7 +53,8 @@ app.post('/add-entry', async (req, res) => {
 
 app.get('/budget-data', async (req, res) => {
   try {
-    const entries = await Entry.find({ userId: req.user._id }); // Fetch all entries from MongoDB
+    // const entries = await Entry.find({ userId: req.user._id }); // Fetch all entries from MongoDB
+    const entries = await Entry.find();
     res.status(200).json(entries); // Send data back to the client
   } catch (err) {
     console.error('Error fetching budget data:', err);
