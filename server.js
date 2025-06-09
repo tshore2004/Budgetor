@@ -11,13 +11,14 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// mongoose.connect(process.env.MONGO_URI)
+//   .then(() => console.log('MongoDB connected successfully'))
+//   .catch(err => console.error('MongoDB connection error:', err));
 
 
 // Define schema and model
 const EntrySchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' }, 
   type: { type: String, required: true },
   amount: { type: Number, required: true },
   description: { type: String },
@@ -85,6 +86,35 @@ app.delete('/delete-entry/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete entry' });
   }
 });
+
+async function startServer() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI); // or MONGODB_URI, consistent!
+    console.log('MongoDB connected successfully');
+
+    // Add connection event listeners here (optional but helpful)
+    mongoose.connection.on('connected', () => {
+      console.log('Mongoose connected to DB');
+    });
+    mongoose.connection.on('error', (err) => {
+      console.error('Mongoose connection error:', err);
+    });
+    mongoose.connection.on('disconnected', () => {
+      console.log('Mongoose disconnected');
+    });
+
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+      console.log('MONGO_URI:', process.env.MONGO_URI);
+    });
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  }
+}
+
+startServer();
+
 
 
 app.listen(PORT, () => {

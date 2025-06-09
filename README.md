@@ -35,7 +35,7 @@ Ensure you have the following installed:
 
 2. Install dependencies:
    npm install
-   # or
+   # Or
    yarn install
 
 3. Set up the environment variables:
@@ -45,7 +45,7 @@ Ensure you have the following installed:
 
 4. Start the development server:
    npm start
-   # or
+   # Or
    yarn start
 
 5. Open your browser and navigate to http://localhost:3000 to use Budgetor.
