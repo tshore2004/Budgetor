@@ -13,7 +13,7 @@ function App() {
 
   const addExpense = async (newExpense) => {
     try {
-      const response = await fetch('API_BASE_URL/add-entry', {
+      const response = await fetch('${API_BASE_URL}/add-entry', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ function App() {
 
   const handleDeleteExpense = async (id) => {
     try {
-      const response = await fetch(`API_BASE_URL/delete-entry/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/delete-entry/${id}`, {
         method: 'DELETE',
       });
 
@@ -50,7 +50,7 @@ function App() {
 
   const addIncome = async (newIncome) => {
     try {
-      const response = await fetch(`API_BASE_URL/add-entry`, {
+      const response = await fetch(`${API_BASE_URL}/add-entry`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ function App() {
 
   const handleDeleteIncome = async (id) => {
     try {
-      const response = await fetch(`API_BASE_URL/delete-entry/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/delete-entry/${id}`, {
         method: 'DELETE',
       });
 
@@ -88,7 +88,7 @@ function App() {
   useEffect(() => {
     const fetchBudgetData = async () => {
       try {
-        const response = await fetch(`API_BASE_URL/budget-data`);
+        const response = await fetch(`${API_BASE_URL}/budget-data`);
         const data = await response.json();
 
         // Separate income and expenses if needed
@@ -108,7 +108,7 @@ function App() {
   const clearData = async () => {
     if (window.confirm('Are you sure you want to clear all data?')) {
       try {
-        const response = await fetch(`API_BASE_URL/clear-data`, {
+        const response = await fetch(`${API_BASE_URL}/clear-data`, {
           method: 'DELETE',
         });
         const result = await response.json();
