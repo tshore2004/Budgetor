@@ -39,6 +39,10 @@ app.get('/', async (req, res) => {
   }
 });
 
+app.get('/ping', (req, res) => {
+  res.send('pong');
+});
+
 app.post('/add-entry', async (req, res) => {
   try {
     const { type, amount, description, category } = req.body;
