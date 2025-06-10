@@ -12,7 +12,7 @@
 !README.md
 !package.json
 !package-lock.json
-
+!auth.js
 # dependencies
 /node_modules
 **/node_modules/

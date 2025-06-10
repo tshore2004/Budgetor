@@ -4,17 +4,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const PORT = process.env.PORT || 5000;
 const app = express();
-
+const jwt = require('jsonwebtoken');
+const SECRET = process.env.JWT_SECRET;
+const authenticateToken = require('./auth');
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// MongoDB connection
-// mongoose.connect(process.env.MONGO_URI)
-//   .then(() => console.log('MongoDB connected successfully'))
-//   .catch(err => console.error('MongoDB connection error:', err));
-
 
 // Define schema and model
 const EntrySchema = new mongoose.Schema({
@@ -27,6 +23,12 @@ const EntrySchema = new mongoose.Schema({
 });
 const Entry = mongoose.model('Entry', EntrySchema);
 
+
+app.get('/auth/anonymous', (req, res) => {
+  const anonymousUserId = new mongoose.Types.ObjectId(); // Unique ID
+  const token = jwt.sign({ userId: anonymousUserId }, SECRET, { expiresIn: '30d' }); // lasts 30 days
+  res.json({ token });
+});
 
 app.get('/', async (req, res) => {
   try {
@@ -43,22 +45,24 @@ app.get('/ping', (req, res) => {
   res.send('pong');
 });
 
-app.post('/add-entry', async (req, res) => {
+app.post('/add-entry', authenticateToken, async (req, res) => {
   try {
     const { type, amount, description, category } = req.body;
-    const newEntry = new Entry({ type, amount, description, category });
+    const userId = req.userId;
+
+    const newEntry = new Entry({ userId, type, amount, description, category });
     await newEntry.save();
-    res.status(201).json({ message: 'Entry saved successfully!' });
+    res.status(201).json(newEntry);
   } catch (err) {
     console.error('Error saving entry:', err);
     res.status(500).json({ error: 'Failed to save entry' });
   }
 });
 
-app.get('/budget-data', async (req, res) => {
+app.get('/budget-data', authenticateToken, async (req, res) => {
   try {
-    // const entries = await Entry.find({ userId: req.user._id }); // Fetch all entries from MongoDB
-    const entries = await Entry.find();
+    const entries = await Entry.find({ userId: req.userId });
+    
     res.status(200).json(entries); // Send data back to the client
   } catch (err) {
     console.error('Error fetching budget data:', err);
@@ -66,9 +70,9 @@ app.get('/budget-data', async (req, res) => {
   }
 });
 
-app.delete('/clear-data', async (req, res) => {
+app.delete('/clear-data', authenticateToken, async (req, res) => {
   try {
-    await Entry.deleteMany(); // This deletes all documents in the collection
+    await Entry.deleteMany({ userId: req.userId }); // This deletes all documents in the collection
     res.status(200).json({ message: 'All data cleared successfully!' });
   } catch (err) {
     console.error('Error clearing data:', err);
@@ -76,10 +80,10 @@ app.delete('/clear-data', async (req, res) => {
   }
 });
 
-app.delete('/delete-entry/:id', async (req, res) => {
+app.delete('/delete-entry/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params; // Get the ID from the route parameter
-    const deletedEntry = await Entry.findByIdAndDelete(id); // Delete the specific entry by ID
+    const deletedEntry = await Entry.findByIdAndDelete({ _id: id, userId: req.userId }); // Delete the specific entry by ID
 
     if (deletedEntry) {
       res.status(200).json({ message: 'Entry deleted successfully!', deletedEntry });

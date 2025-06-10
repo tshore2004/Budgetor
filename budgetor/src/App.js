@@ -4,25 +4,28 @@ import BalanceTracker from './Components/BalanceTracker';
 import ExpenseTracker from './Components/ExpenseTracker';
 import IncomeTracker from './Components/IncomeTracker';
 import ChartComponent from './Components/ChartComponents';
-
+//import { get } from 'mongoose';
 function App() {
   const [expenses, setExpenses] = useState([]);
   const [income, setIncome] = useState([]);
   const [activeTab, setActiveTab] = useState('balance');
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+  const [authToken, setAuthToken] = useState(null);
+  const getAuthHeaders = () => ({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${authToken}`,
+  });
 
   const addExpense = async (newExpense) => {
     try {
-      const response = await fetch('${API_BASE_URL}/add-entry', {
+      const response = await fetch(`${API_BASE_URL}/add-entry`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ type: 'expense', ...newExpense }),
       });
       const result = await response.json();
       console.log(result.message);
-      setExpenses([...expenses, newExpense]);
+      setExpenses([...expenses, result]);
     } catch (error) {
       console.error('Error saving expense:', error);
     }
@@ -32,6 +35,7 @@ function App() {
     try {
       const response = await fetch(`${API_BASE_URL}/delete-entry/${id}`, {
         method: 'DELETE',
+        headers: getAuthHeaders()
       });
 
       if (response.ok) {
@@ -52,14 +56,12 @@ function App() {
     try {
       const response = await fetch(`${API_BASE_URL}/add-entry`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers:getAuthHeaders(),
         body: JSON.stringify({ type: 'income', ...newIncome }),
       });
       const result = await response.json();
       console.log(result.message);
-      setIncome([...income, newIncome]);
+      setIncome([...income, result]);
     } catch (error) {
       console.error('Error saving income:', error);
     }
@@ -69,6 +71,7 @@ function App() {
     try {
       const response = await fetch(`${API_BASE_URL}/delete-entry/${id}`, {
         method: 'DELETE',
+        headers: getAuthHeaders()
       });
 
       if (response.ok) {
@@ -85,31 +88,98 @@ function App() {
     }
   };
 
+
+
+  
+  // useEffect(() => {
+  //   const init = async () => {
+  //     try {
+  //       let token = localStorage.getItem('jwt_token');
+
+  //       if (!token) {
+  //         const response = await fetch(`${API_BASE_URL}/auth/anonymous`);
+  //         const data = await response.json();
+  //         token = data.token;
+  //         localStorage.setItem('jwt_token', token);
+  //       }
+
+  //       setAuthToken(token);
+
+  //       const budgetResponse = await fetch(`${API_BASE_URL}/budget-data`, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       });
+  //       const budgetData = await budgetResponse.json();
+
+  //       const incomeData = budgetData.filter(item => item.type === 'income');
+  //       const expenseData = budgetData.filter(item => item.type === 'expense');
+
+  //       setIncome(incomeData);
+  //       setExpenses(expenseData);
+  //     } catch (error) {
+  //       console.error('Error during initialization:', error);
+  //     }
+  //   };
+
+  //   init();
+  // }, [API_BASE_URL]);
+
   useEffect(() => {
-    const fetchBudgetData = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/budget-data`);
+  const init = async () => {
+    try {
+      let token = localStorage.getItem('jwt_token');
+
+      if (!token) {
+        const response = await fetch(`${API_BASE_URL}/auth/anonymous`);
         const data = await response.json();
 
-        // Separate income and expenses if needed
-        const incomeData = data.filter(item => item.type === 'income');
-        const expenseData = data.filter(item => item.type === 'expense');
+        if (!data.token) {
+          throw new Error('Failed to get token');
+        }
 
-        setIncome(incomeData);
-        setExpenses(expenseData);
-      } catch (error) {
-        console.error('Error fetching budget data:', error);
+        token = data.token;
+        localStorage.setItem('jwt_token', token);
       }
-    };
 
-    fetchBudgetData();
-  }, []);
+      setAuthToken(token);
+
+      const budgetResponse = await fetch(`${API_BASE_URL}/budget-data`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!budgetResponse.ok) {
+        const errData = await budgetResponse.json();
+        throw new Error(errData.error || 'Failed to fetch budget data');
+      }
+
+      const budgetData = await budgetResponse.json();
+
+      if (!Array.isArray(budgetData)) {
+        throw new Error('Unexpected response format: not an array');
+      }
+
+      const incomeData = budgetData.filter(item => item.type === 'income');
+      const expenseData = budgetData.filter(item => item.type === 'expense');
+
+      setIncome(incomeData);
+      setExpenses(expenseData);
+    } catch (error) {
+      console.error('Error during initialization:', error);
+      localStorage.removeItem('jwt_token');
+      // Optional: reload to trigger re-auth
+      window.location.reload();
+    }
+  };
+
+  init();
+}, [API_BASE_URL]);
+
 
   const clearData = async () => {
     if (window.confirm('Are you sure you want to clear all data?')) {
       try {
         const response = await fetch(`${API_BASE_URL}/clear-data`, {
           method: 'DELETE',
+          headers: getAuthHeaders()
         });
         const result = await response.json();
         if (response.ok) {
