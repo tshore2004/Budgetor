@@ -2,6 +2,10 @@
 
 Budgetor is a simple budgeting tool to help you track your income and expenses, categorize transactions, and visualize your financial data. Built with Node.js and MongoDB, it provides an easy way to manage your finances.
 
+## Live Demo
+
+Try it out here: [budgetor-pied.vercel.app](https://budgetor-pied.vercel.app)
+
 ## Features
 
 - Log income and expenses
